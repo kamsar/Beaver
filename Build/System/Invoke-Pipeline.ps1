@@ -7,13 +7,14 @@
 
     Write-Output "Pipeline $($pipelineName) executing."
 
-    Get-ChildItem  "$($pipelinePath)\*.*" | Sort -Property $_.Name | foreach { 
+    Get-ChildItem  "$($pipelinePath)\*" | Sort -Property $_.Name | foreach { 
         "Executing $($_.Name)";
     
         $providerPath = ".\System\Pipeline Providers\$($_.Extension.TrimStart('.')).ps1"
 
         if(!(Test-Path $providerPath)) {
-            Write-Error "Provider not found for $($_.Name)!" -ErrorAction Stop
+            Write-Warning "Pipeline Provider not found for $($_.FullName)! Skipping item. Expected provider path was $($providerPath)"
+            return
         }
 
         $pipelineItemPath = $_.FullName
