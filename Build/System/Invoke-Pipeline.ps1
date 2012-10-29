@@ -5,10 +5,10 @@
     $pipelineName = [IO.Path]::GetFileName($path)
     $pipelinePath = $path.TrimEnd('\', '/')
 
-    Write-Output "Pipeline $($pipelineName) executing."
+    Write-Host "Pipeline $($pipelinePath) executing." -ForegroundColor Green
 
     Get-ChildItem  "$($pipelinePath)\*" | Sort -Property $_.Name | foreach { 
-        "Executing $($_.Name)";
+        Write-Host "Executing pipeline item $($_.Name)" -ForegroundColor Cyan
     
         $providerPath = ".\System\Pipeline Providers\$($_.Extension.TrimStart('.')).ps1"
 
@@ -22,5 +22,5 @@
         & $providerPath
     }
 
-    Write-Output "Pipeline $($pipelineName) complete."
+    Write-Host "Pipeline $($pipelinePath) complete." -ForegroundColor Green
 }

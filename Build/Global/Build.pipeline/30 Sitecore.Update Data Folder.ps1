@@ -3,7 +3,9 @@ $SitecoreLicensePath = Resolve-Path ..\Dependencies\Licenses\license.xml
 $SitecoreDataFolder = "C:\fake\path"
 
 $SourceDataDirectory = Join-Path $SourceWebDirectory "Data"
+$DataWorkingDirectory = Join-Path $WorkingDirectory "Data"
 
+# TODO: consider implementing this with overlay and a subpipeline
 New-Item -ItemType Directory -Path $DataWorkingDirectory -ErrorAction SilentlyContinue
 Copy-Item $SitecoreLicensePath "$($DataWorkingDirectory)\license.xml"
 Copy-Item "$($SourceDataDirectory)\webdav.lic" "$($DataWorkingDirectory)\webdav.lic"

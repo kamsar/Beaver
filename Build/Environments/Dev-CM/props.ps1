@@ -1,0 +1,1 @@
+﻿$DeployArchetypes = @("CM", "Live-Error-Handling")
