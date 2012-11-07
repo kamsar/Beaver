@@ -26,6 +26,25 @@ $tempSourceName = "xdt-source-temp.xml"
 $rootPathDirectory = [IO.Path]::GetDirectoryName($rootPath)
 $tempSourcePath = Join-Path $rootPathDirectory $tempSourceName
 
+# Compose variables in current scope into parameter format to pass to ctt.exe
+# See http://outcoldman.com/en/blog/show/238
+$variables = @() 
+
+Get-Variable | Where-Object { 
+    [Text.RegularExpressions.Regex]::IsMatch($_.Name, '[A-Za-z0-9]+') `
+    -and $_.Name -ne "StackTrace" `
+    -and $_.Name -ne "args" `
+    -and $_.Name -ne "false" `
+    -and $_.Name -ne "true" `
+    -and $_.Name -ne "input" `
+    -and $_.Value -ne $null `
+    -and ![string]::IsNullOrEmpty($_.Value.ToString())
+} | foreach {
+    $variables += "$($_.Name):`"$($_.Value)`""
+}
+
+$variablesArgs = [string]::Join(";", $variables)
+
 Write-Host "Transforming " $rootPath.Path " using transform file " $pipelineItemPath
 
 Rename-Item $rootPath $tempSourceName
@@ -34,7 +53,7 @@ if($? -eq $false) {
     Write-Error "Unable to create temp file for processing transform. Aborting." -ErrorAction Stop
 }
 
-$transformProcess = Start-Process -FilePath ".\System\Pipeline Providers\Support\ctt.exe" -ArgumentList ("s:`"$($tempSourcePath)`"", "t:`"$($pipelineItemPath)`"", "d:`"$($rootPath)`"") -NoNewWindow -Wait -PassThru
+$transformProcess = Start-Process -FilePath ".\System\Pipeline Providers\Support\ctt.exe" -ArgumentList ("s:`"$($tempSourcePath)`"", "t:`"$($pipelineItemPath)`"", "d:`"$($rootPath)`"", "p:$($variablesArgs)") -NoNewWindow -Wait -PassThru
 
 Remove-Item $tempSourcePath
 
