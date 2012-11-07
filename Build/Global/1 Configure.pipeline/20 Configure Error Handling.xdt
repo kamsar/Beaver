@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	
+	<system.web>
+		<customErrors xdt:Transform="SetAttributes(mode)" mode="{CustomErrorsMode:RemoteOnly}" />
+	</system.web>
+	
+	<system.webServer>
+		<httpErrors xdt:Transform="SetAttributes(errorMode)" errorMode="{IISErrorsMode:DetailedLocalOnly}" />
+	</system.webServer>
+</configuration>
