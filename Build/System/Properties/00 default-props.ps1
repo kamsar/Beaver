@@ -4,7 +4,7 @@ if($DeployEnvironment -eq $null) {
     Write-Error "DeployEnvironment variable was not defined. It is required." -ErrorAction Stop
 }
 
-Write-Host "Using environment $($DeployEnvironment)"
+Write-Host "Deploying to environment $($DeployEnvironment)" -ForegroundColor Magenta
 
 $EnvironmentDirectory = Resolve-Path ".\Environments\$($DeployEnvironment)" -ErrorAction Stop
 
@@ -51,8 +51,10 @@ if(Test-Path $EnvironmentPropertiesPath) {
 ############## END LOADING ENVIRONMENT AND ARCHETYPE PROPERTIES FILES ########################
 
 if($SourceDirectory -eq $null){
-    $SourceDirectory = Resolve-Path '..' -ErrorAction Stop
+    $SourceDirectory = Resolve-Path '..' -ErrorAction Stop  
 }
+
+Write-Host "Using source directory $($SourceDirectory)" -ForegroundColor DarkCyan
 
 if($WorkingDirectory -eq $null) {
     $WorkingDirectory = Resolve-Path "..\Deploy" -ErrorAction Stop
@@ -62,10 +64,14 @@ if($WorkingDirectory -eq $null) {
     $WorkingDirectory = Join-Path $WorkingDirectory $DeployEnvironment
 }
 
+Write-Host "Using working directory $($WorkingDirectory)" -ForegroundColor DarkCyan
+
 
 if($MSBuildConfiguration -eq $null) {
     $MSBuildConfiguration = "Debug"
 }
+
+Write-Host "Using MSBuild configuration $($MSBuildConfiguration)" -ForegroundColor DarkCyan
 
 if($SourceWebDirectory -eq $null) {
     $SourceWebDirectory = Resolve-Path "$($SourceDirectory)\Source\*.Web" -ErrorAction Stop
