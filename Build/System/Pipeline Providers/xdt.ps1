@@ -34,20 +34,11 @@ if($? -eq $false) {
     Write-Error "Unable to create temp file for processing transform. Aborting." -ErrorAction Stop
 }
 
-. '.\System\Build-Project.ps1'
-
-$buildProps = New-Object "System.Collections.Generic.Dictionary[string,string]"
-
-$buildProps.Add("SourceFile", $tempSourcePath)
-$buildProps.Add("TransformFile", $pipelineItemPath)
-$buildProps.Add("DestinationFile", $rootPath)
-
-
-Build-Project '.\System\Pipeline Providers\Support\XDTShim.build' $null @("XDT") $buildProps
+$transformProcess = Start-Process -FilePath ".\System\Pipeline Providers\Support\ctt.exe" -ArgumentList ("s:`"$($tempSourcePath)`"", "t:`"$($pipelineItemPath)`"", "d:`"$($rootPath)`"") -NoNewWindow -Wait -PassThru
 
 Remove-Item $tempSourcePath
 
-if($? -eq $false) {
+if($transformProcess.ExitCode -ne 0) {
     Write-Error "A problem occurred applying XDT transformation. Aborting." -ErrorAction Stop
 }
 
