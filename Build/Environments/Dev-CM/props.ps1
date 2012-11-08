@@ -1,2 +1,4 @@
-﻿$DeployArchetypes = @("CM", "Live-Error-Handling")
+﻿$DeployArchetypes = @("Sitecore-All")
 $MSBuildConfiguration = "Release"
+
+$SmtpServer = "smtp"

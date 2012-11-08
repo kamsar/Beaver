@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+  
+	<system.net>
+		<mailSettings>
+			<smtp>
+				<network xdt:Transform="SetAttributes(host,userName,password,port)" host="{SmtpServer:}" userName="{SmtpServerUserName:}" password="{SmtpServerPassword:}" port="{SmtpServerPort:25}" />
+			</smtp>
+		</mailSettings>
+	</system.net>
+	
+	<appSettings>
+		<add key="Email.RedirectRecipient" xdt:Transform="Remove()" xdt:Locator="Match(key)" />
+	</appSettings>
+</configuration>

@@ -42,10 +42,10 @@
 
     $buildLog.Messages | foreach {
         if($_.TrimStart().StartsWith("WARNING")) {
-            Write-Warning $_.Replace("WARNING: ", [string]::Empty)
+            Log-Warning $_.Replace("WARNING: ", [string]::Empty)
         }
         elseif($_.TrimStart().StartsWith("ERROR")) {
-            Write-Host $_ -ForegroundColor Red
+            Log-Error $_
         }
         else { 
             Write-Host $_ 
@@ -53,6 +53,6 @@
     }
 
     if($result.OverallResult -ne "Success") {
-        Write-Error "Build failed, aborting" -ErrorAction Stop
+        Log-Error "Build failed, aborting" -Abort
     }
 }

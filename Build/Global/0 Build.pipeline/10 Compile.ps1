@@ -2,7 +2,7 @@ $targetFile = [string]::Concat($SourceDirectory, "\*.sln")
 
 
 if(!(Test-Path $targetFile)) { 
-    Write-Error "Couldn't resolve solution file $($targetFile)." -ErrorAction Stop
+    Log-Error "Couldn't resolve solution file $($targetFile)." -Abort
 }
 
 $buildProps = New-Object "System.Collections.Generic.Dictionary[string,string]"

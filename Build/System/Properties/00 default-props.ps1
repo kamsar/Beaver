@@ -17,7 +17,7 @@ if(Test-Path $EnvironmentPropertiesPath) {
     Write-Host "Loaded $($EnvironmentPropertiesPath)"
 }
 else {
-    Write-Warning "$($DeployEnvironment) did not contain a props.ps1 file. This should usually exist."
+    Log-Warning "$($DeployEnvironment) did not contain a props.ps1 file. This should usually exist."
 }
 
 # make sure archetypes array exists if not defined

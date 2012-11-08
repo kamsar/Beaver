@@ -1,3 +1,4 @@
 *.suo
 Source*
 Deploy*
+/Build/build.log

@@ -26,6 +26,10 @@ if(!$DeployEnvironment) {
     $DeployEnvironment = ReadDeployEnvironment
 }
 
+# Start up logging
+. .\System\ScriptLogger.ps1
+Start-Transcript -Path ".\build.log"
+
 # Load global properties files in order
 Get-ChildItem -Path .\System\Properties -Filter *.ps1 | foreach {
     Write-Host "Loading global properties file $($_.FullName)" -ForegroundColor DarkGreen
@@ -45,3 +49,9 @@ $CascadePipelineDirectories += Join-Path $EnvironmentDirectory "Pipelines"
 # Make magic occur - invoke all global pipelines, followed by any cascading extensions and cascading custom pipelines
 Invoke-Pipeline-Cascade ".\Global" $CascadePipelineDirectories
 
+Write-Warning-Summary
+Write-Error-Summary
+
+Stop-Transcript
+
+Write-Host "All done!" -ForegroundColor Magenta

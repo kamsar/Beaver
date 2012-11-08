@@ -13,7 +13,7 @@
         $providerPath = ".\System\Pipeline Providers\$($_.Extension.TrimStart('.')).ps1"
 
         if(!(Test-Path $providerPath)) {
-            Write-Warning "Pipeline Provider not found for $($_.FullName)! Skipping item. Expected provider path was $($providerPath)"
+            Log-Warning "Pipeline Provider not found for $($_.FullName)! Skipping item. Expected provider path was $($providerPath)"
             return
         }
 
