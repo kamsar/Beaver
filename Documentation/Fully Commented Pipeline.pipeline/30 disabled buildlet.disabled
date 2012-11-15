@@ -1,0 +1,3 @@
+This is a disabled buildlet.
+
+This buildlet will be ignored when running this pipeline. This convention is useful if you want to disable a buildlet temporarily without deleting it.

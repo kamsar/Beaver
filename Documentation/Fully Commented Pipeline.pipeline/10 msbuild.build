@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Demonstration">
+	<!-- 
+		This is an example of a buildlet implemented in MSBuild.
+		Buildlets in MSBuild have all PowerShell variables in scope (objects converted to strings) passed
+		as properties to them.
+		
+		The targets in the DefaultTargets attribute above will be the entry points for the MSBuild invocation.
+	-->	
+	
+	<Target Name="Demonstration">
+		<Warning Text="Hello from MSBuild. The WebWorkingDirectory from PowerShell is:$(WebWorkingDirectory)" />
+	</Target>
+</Project>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<!-- 
+		This is an example of a config transform file implemented in Microsoft's XDT language
+		(aka Web.config Transformations - see http://msdn.microsoft.com/en-us/library/dd465326.aspx for docs)
+		
+		You have to add the xmlns:deploy="http://github.com/kamsar/xdt-deploy" to the root element as we use
+		an extended schema to allow us to define which file should be transformed directly within the XDT definition.
+		
+		All variables from PowerShell are also passed as XDT parameters. You can specify variables in two ways:
+		{VariableName} (use value, error if not defined)
+		{VariableName:DefaultValue} (use value or default if not defined)
+		
+		The transformation is executed using the XDT Transformation Tool, so documentation thereof is relevant.
+		See http://ctt.codeplex.com/ for more info.
+	-->
+	
+	<!-- 
+		The deploy:TargetFile is a required element that defines what file to execute the transform on.
+		The element body is a relative path from the root of the working directory (eg ..\deploy\$environmentname).
+		Normally the working directory will contain a Website folder that has the web root in it; the below example
+		would then cause this transform to execute on the root Web.config file.
+	-->
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	
+	<!-- for the sake of demonstration, remove the configuration/connectionStrings element -->
+	<connectionStrings xdt:Transform="Remove" />
+	
+	<appSettings>
+		<!-- for the sake of demonstration, set the "Foo" appSetting to the $FooValue PS variable, or "darn, defaulted" if the variable didn't exist -->
+		<add name="Foo" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{FooValue:darn, defaulted}" />
+	</appSettings>
+</configuration>

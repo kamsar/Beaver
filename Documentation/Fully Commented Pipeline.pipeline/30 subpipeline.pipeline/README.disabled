@@ -1,0 +1,8 @@
+This is an example of a "subpipeline."
+
+This is basically a child pipeline that executes in alphabetical order just like a buildlet file. It can contain any type of
+buildlet that a normal pipeline can contain - including its own subpipelines.
+
+Subpipelines are good to group together related tasks into a single component, for example if you had to "configure foos,"
+which entailed a XDT transform, copying two new config patch files, and a PowerShell script it might make sense to use a subpipeline
+to group the pieces of configuring foos together.

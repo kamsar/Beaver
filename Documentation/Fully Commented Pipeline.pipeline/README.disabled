@@ -1,0 +1,6 @@
+This is a pipeline that has a fully commented buildlet of every allowed type, explaining how to use each in turn.
+
+Pipelines are a series of "buildlets" in files that are executed in alphabetical order. The action taken for each buildlet
+is determined by the file extension of the buildlet (e.g. *.ps1 is executed by PowerShell, *.xdt is processed as an XML transform, etc)
+
+Pipelines are the core unit of a build; the whole build/deploy process is the execution of a set of pipelines in turn.
