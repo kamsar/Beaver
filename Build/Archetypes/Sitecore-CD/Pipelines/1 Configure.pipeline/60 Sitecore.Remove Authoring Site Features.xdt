@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	<deploy:TargetFile>Website\App_Config\Include\*.config</deploy:TargetFile>
+
+	<sitecore>
+		<sites>
+			<!-- Disables debugging, preview, and webedit for all sites in CD configuration -->
+			<site xdt:Transform="SetAttributes(enableDebugger,enableWebEdit,enablePreview,enableWorkflow)" enableDebugger="false" enableWebEdit="false" enablePreview="false" enableWorkflow="false" />
+		</sites>
+	</sitecore>
+</configuration>

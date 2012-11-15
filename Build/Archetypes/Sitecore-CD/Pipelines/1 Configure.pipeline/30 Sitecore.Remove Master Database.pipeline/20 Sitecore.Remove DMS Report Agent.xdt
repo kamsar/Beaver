@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\App_Config\Include\Sitecore.Analytics.config</deploy:TargetFile>
+	<deploy:MissingFileError>false</deploy:MissingFileError>
+
+	<sitecore>
+		<scheduling>
+			<!-- remove the DMS report email agent (uses master db) -->
+			<agent type="Sitecore.Analytics.Tasks.EmailReportsTask, Sitecore.Analytics" xdt:Locator="Match(type)" xdt:Transform="Remove" />
+		</scheduling>
+	</sitecore>
+</configuration>

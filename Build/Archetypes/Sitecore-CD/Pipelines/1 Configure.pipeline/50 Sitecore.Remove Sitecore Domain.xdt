@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<sitecore>
+		<domainManager>
+			<domains>
+				<!-- Removes the "sitecore" security domain from production (used for admin logins) -->
+				<domain id="sitecore" xdt:Locator="Match(id)" xdt:Transform="Remove" />
+			</domains>
+		</domainManager>
+	</sitecore>
+</configuration>

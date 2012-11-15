@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<sitecore>
+		<scheduling>
+			<!-- disable the publish agent - we don't need to publish automatically from production, the authoring will handle that -->
+			<agent type="Sitecore.Tasks.PublishAgent" xdt:Locator="Match(type)" xdt:Transform="Remove" />
+			
+			<!-- remove CleanupPublishQueue agent -->
+			<agent type="Sitecore.Tasks.CleanupPublishQueue, Sitecore.Kernel" xdt:Locator="Match(type)" xdt:Transform="Remove" />
+		</scheduling>
+		
+		<!-- removes the publishing config element -->
+		<publishing xdt:Transform="Remove" />
+		
+		<!-- removes the replacer automatically invoked on publish, should it be turned on -->
+		<replacers xdt:Transform="Remove" />
+	</sitecore>
+</configuration>

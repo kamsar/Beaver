@@ -1,1 +1,2 @@
 $RemoveMasterDatabase = $true
+$SitecoreContentDatabase = "web"

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<connectionStrings xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\App_Config\ConnectionStrings.config</deploy:TargetFile>
+	<deploy:Condition>$RemoveMasterDatabase -eq $true</deploy:Condition>
+	
+	<add name="master" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+</connectionStrings>

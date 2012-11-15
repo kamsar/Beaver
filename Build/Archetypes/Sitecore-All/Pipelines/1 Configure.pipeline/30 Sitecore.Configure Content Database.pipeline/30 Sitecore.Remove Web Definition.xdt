@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	<deploy:Condition>($SitecoreContentDatabase -ne $null) -and ($SitecoreContentDatabase -ne "web")</deploy:Condition>
+	
+	<sitecore>
+		<databases>
+			<!-- as the content database is not web, we can remove the web database's definition -->
+			<database id="web" xdt:Locator="Match(id)" xdt:Transform="Remove" />
+		</databases>
+	</sitecore>
+</configuration>

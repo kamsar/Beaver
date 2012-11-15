@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	<deploy:Condition>$RemoveMasterDatabase -eq $true</deploy:Condition>
+	
+	<sitecore>
+		<databases>
+			<!-- remove the master database definition -->
+			<database id="master" xdt:Locator="Match(id)" xdt:Transform="Remove" />
+		</databases>
+		
+		<scheduling>
+			<!-- get rid of the master DatabaseAgent -->
+			<agent xdt:Locator="Condition(param/[@desc='database' and .='master'])" xdt:Transform="Remove" />
+		</scheduling>
+		
+		<search>
+			<configuration>
+				<indexes>
+					<index>
+						<locations>
+							<!-- get rid of master references in indexing -->
+							<master xdt:Transform="Remove" />
+						</locations>
+					</index>
+				</indexes>
+			</configuration>
+		</search>
+		
+		<IDTable>
+			<!-- repoint the IDTable's connection string to the content database instead of master -->
+			<param connectionStringName="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@connectionStringName='master')" xdt:Transform="SetAttributes(connectionStringName)" />
+		</IDTable>
+	</sitecore>
+</configuration>

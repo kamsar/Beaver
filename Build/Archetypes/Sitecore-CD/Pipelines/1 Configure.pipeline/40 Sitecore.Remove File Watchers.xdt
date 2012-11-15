@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<system.webServer>
+		<modules>
+			<!-- remove upload watcher http module -->
+			<add name="SitecoreUploadWatcher" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+		</modules>
+	</system.webServer>
+	
+	<system.web>
+		<httpModules>
+			<!-- remove upload watcher http module -->
+			<add name="SitecoreUploadWatcher" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+		</httpModules>
+	</system.web>
+	<sitecore>
+		<mediaLibrary>
+			<!-- remove media watcher config -->
+			<watcher xdt:Transform="Remove" />
+		</mediaLibrary>
+		<watchers>
+			<!-- delete media and config watcher configurations -->
+			<media xdt:Transform="Remove" />
+		</watchers>
+	</sitecore>
+</configuration>

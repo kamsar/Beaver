@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+	<deploy:TargetFile>Website\App_Config\Include\*.config</deploy:TargetFile>
+	<deploy:Condition>$RemoveMasterDatabase -eq $true</deploy:Condition>
+	
+	<sitecore>
+		<sites>
+			<!-- change sites whose database or content (ContentDatabase) attributes point to master -->
+			<site database="{SitecoreContentDatabase:web}" content="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@database='master' or @content='master')" xdt:Transform="SetAttributes(database,content)" />
+		</sites>
+	</sitecore>
+</configuration>

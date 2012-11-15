@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<log4net>
+		<!-- remove the log4net appender for webdav logging -->
+		<appender name="WebDAVLogFileAppender" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+	</log4net>
+	
+	<system.webServer>
+		<modules>
+			<!-- remove the removal of the webdav module -->
+			<remove name="WebDAVModule" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+		</modules>
+		<handlers>
+			<!-- remove the webdav handlers -->
+			<add name="WebDAVRoot" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+			<add name="WebDAVRoot64" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+			<add name="Sitecore.WebDAVMediaRequestHandler" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+		</handlers>
+	</system.webServer>
+	
+	<system.web>
+		<httpHandlers>
+			<!-- remove the legacy webdav handler -->
+			<add type="Sitecore.Resources.Media.WebDAVMediaRequestHandler, Sitecore.Kernel" xdt:Locator="Match(type)" xdt:Transform="Remove" />
+		</httpHandlers>
+	</system.web>
+</configuration>

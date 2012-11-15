@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<connectionStrings xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\App_Config\ConnectionStrings.config</deploy:TargetFile>
+	<deploy:Condition>($SitecoreContentDatabase -ne $null) -and ($SitecoreContentDatabase -ne "web")</deploy:Condition>
+	
+	<!-- as the content database is not "web", we can remove the web connection string as well -->
+	<add name="web" xdt:Locator="Match(name)" xdt:Transform="Remove" />
+</connectionStrings>

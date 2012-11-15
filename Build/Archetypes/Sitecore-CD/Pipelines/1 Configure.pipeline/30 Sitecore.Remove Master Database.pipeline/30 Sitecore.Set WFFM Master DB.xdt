@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\App_Config\Include\forms.config</deploy:TargetFile>
+	<deploy:MissingFileError>false</deploy:MissingFileError>
+	<deploy:Condition>$RemoveMasterDatabase -eq $true</deploy:Condition>
+	
+	<sitecore>
+		<settings>
+			<!-- change the WFM master db setting if present -->
+			<setting xdt:Locator="Condition(@name='WFM.MasterDatabase' and @value='master')" xdt:Transform="SetAttributes(value)" value="{SitecoreContentDatabase:web}" />
+		</settings>
+	</sitecore>
+</configuration>
