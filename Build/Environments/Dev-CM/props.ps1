@@ -2,3 +2,5 @@
 $MSBuildConfiguration = "Release"
 
 $SmtpServer = "smtp"
+$SmtpServerUsername = "fakeuser"
+$SmtpServerPassword = "fakepassword"
