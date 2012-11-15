@@ -23,6 +23,12 @@
 	-->
 	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
 	
+	<!-- this optional parameter (if present and false) will prevent a build error from occurring if the target of the transform does not exist (it will be skipped) -->
+	<deploy:MissingFileError>false</deploy:MissingFileError>
+	
+	<!-- this optional parameter contains a PowerShell expression that should evaluate to true or false. If it evaluates to false, the transformation is skipped -->
+	<deploy:Condition>$FooValue -eq $true</deploy:Condition>
+	
 	<!-- for the sake of demonstration, remove the configuration/connectionStrings element -->
 	<connectionStrings xdt:Transform="Remove" />
 	
