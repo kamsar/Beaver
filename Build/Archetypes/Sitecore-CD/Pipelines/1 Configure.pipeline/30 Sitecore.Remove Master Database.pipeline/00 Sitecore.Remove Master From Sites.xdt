@@ -7,8 +7,11 @@
 	
 	<sitecore>
 		<sites>
-			<!-- change sites whose database or content (ContentDatabase) attributes point to master -->
-			<site database="{SitecoreContentDatabase:web}" content="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@database='master' or @content='master')" xdt:Transform="SetAttributes(database,content)" />
+			<!-- change sites where database attribute point to master -->
+			<site database="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@database='master')" xdt:Transform="SetAttributes(database)" />
+			
+			<!-- change sites whose ContentDatabase attribute points to master -->
+			<site content="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@content='master')" xdt:Transform="SetAttributes(content)" />
 		</sites>
 	</sitecore>
 </configuration>
