@@ -11,7 +11,7 @@
 		
 		<scheduling>
 			<!-- get rid of the master DatabaseAgent -->
-			<agent xdt:Locator="Condition(param/[@desc='database' and .='master'])" xdt:Transform="Remove" />
+			<agent xdt:Locator="Condition(param/@desc='database' and param/text()='master'])" xdt:Transform="Remove" />
 		</scheduling>
 		
 		<search>
