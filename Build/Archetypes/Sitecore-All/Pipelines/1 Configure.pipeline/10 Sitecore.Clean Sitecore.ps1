@@ -16,7 +16,7 @@ $itemsToRemove | foreach {
         Remove-Item $_ -Force -Recurse
     }
     else {
-        Log-Warning "Note path to remove $($_) did not exist - skipping it"
+        Write-Host "Note path to remove $($_) did not exist - skipping it"
     }
 }
 
@@ -24,12 +24,12 @@ $tempPath = "$($WebWorkingDirectory)\temp\*"
 if(Test-Path $tempPath) {
     Remove-Item  $tempPath -Force -Recurse -Exclude readme.txt
 } else {
-    Log-Warning "Note path to remove $($tempPath) did not exist - skipping it"
+    Write-Host "Note path to remove $($tempPath) did not exist - skipping it"
 }
 
 $uploadPath = "$($WebWorkingDirectory)\upload\*"
 if(Test-Path $uploadPath) {
     Remove-Item  -Force -Recurse -Exclude readme.txt
 } else {
-    Log-Warning "Note path to remove $($uploadPath) did not exist - skipping it"
+    Write-Host "Note path to remove $($uploadPath) did not exist - skipping it"
 }
