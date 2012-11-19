@@ -1,3 +1,4 @@
 *.suo
 Deploy*
+/Build/Dependencies
 /Build/build.log
