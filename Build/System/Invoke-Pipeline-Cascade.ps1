@@ -22,12 +22,15 @@ function Invoke-Pipeline-Cascade([string]$pipelinePath, [string[]]$cascadePaths)
     # now we execute any custom pipelines in the cascades that are NOT defined in the primary
     foreach($cascade in $cascadePaths)
     {
-        $cascadePipelines = Get-ChildItem $cascade -Directory
-        foreach($cascadePipeline in $cascadePipelines) {
-            $primaryPath = Join-Path $pipelinePath $cascadePipeline.Name
+        $cascadePipelines = Get-ChildItem $cascade -Directory -ErrorAction SilentlyContinue
 
-            if(!(Test-Path $primaryPath)) {
-               Invoke-Pipeline $cascadePipeline.FullName
+        if($? -eq $true) {
+            foreach($cascadePipeline in $cascadePipelines) {
+                $primaryPath = Join-Path $pipelinePath $cascadePipeline.Name
+
+                if(!(Test-Path $primaryPath)) {
+                   Invoke-Pipeline $cascadePipeline.FullName
+                }
             }
         }
     }
