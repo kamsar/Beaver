@@ -2,6 +2,7 @@
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
 	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
 	<deploy:TargetFile>Website\App_Config\Include\*.config</deploy:TargetFile>
+	<deploy:MissingFileError>false</deploy:MissingFileError>
 	<deploy:Condition>$RemoveMasterDatabase -eq $true</deploy:Condition>
 	
 	<sitecore>
