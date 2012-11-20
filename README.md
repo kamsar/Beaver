@@ -10,8 +10,8 @@ Beaver was originally designed to support build and deploy operations for the [S
 
 ## How to use Beaver
 
-* Check out [the wiki](https://github.com/kamsar/Project-X/wiki) for some quick start documentation and more depth than above.
-* Review the [fully commented pipeline](https://github.com/kamsar/Project-X/tree/master/Documentation/Fully%20Commented%20Pipeline.pipeline) for heavily commented examples of what a pipeline looks like, and how to format all of the buildlet types available by default in Beaver.
+* Check out [the quickstart](https://github.com/kamsar/Beaver/wiki/Quickstart) for some quick start documentation and more depth than above.
+* Review the [fully commented pipeline](https://github.com/kamsar/Beaver/tree/master/Documentation/Fully%20Commented%20Pipeline.pipeline) for heavily commented examples of what a pipeline looks like, and how to format all of the buildlet types available by default in Beaver.
 * Read the code. There's no substitute for this if you want to get deep into the guts of how it works.
 
 ## Licensing
