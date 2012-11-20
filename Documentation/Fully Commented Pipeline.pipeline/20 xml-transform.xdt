@@ -23,6 +23,9 @@
 	-->
 	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
 	
+	<!-- you can specify multiple target files, as well as use wildcards in the target spec. At least one TargetFile is required, but there is no limit. -->
+	<deploy:TargetFile>Website\App_Config\Include\*.config</deploy:TargetFile>
+	
 	<!-- this optional parameter (if present and false) will prevent a build error from occurring if the target of the transform does not exist (it will be skipped) -->
 	<deploy:MissingFileError>false</deploy:MissingFileError>
 	
