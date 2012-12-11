@@ -1,8 +1,10 @@
 function Transform-Xml($transformationPath, $fileToTransform)
 {
     $tempSourceName = "xdt-source-temp.xml"
+    $tempParametersName = "xdt-parameters.xml"
     $rootPathDirectory = [IO.Path]::GetDirectoryName($fileToTransform)
     $tempSourcePath = Join-Path $rootPathDirectory $tempSourceName
+    $tempParametersPath = Join-Path $rootPathDirectory $tempParametersName
 
     # Compose variables in current scope into parameter format to pass to ctt.exe
     # See http://outcoldman.com/en/blog/show/238
@@ -18,10 +20,12 @@ function Transform-Xml($transformationPath, $fileToTransform)
         -and $_.Value -ne $null `
         -and ![string]::IsNullOrEmpty($_.Value.ToString())
     } | foreach {
-        $variables += "$($_.Name):`"$($_.Value)`""
+        $variables += "<param name=`"$($_.Name)`" value=`"$($_.Value.ToString())`" />"
     }
 
-    $variablesArgs = [string]::Join(";", $variables)
+    $variablesArgs = '<parameters>' + [string]::Join("", $variables) + '</parameters>'
+
+    $variablesArgs > $tempParametersPath
 
     Write-Host "Transforming " $fileToTransform " using transform file " $transformationPath
 
@@ -31,9 +35,10 @@ function Transform-Xml($transformationPath, $fileToTransform)
         Log-Error "Unable to create temp file for processing transform. Aborting." -Abort
     }
 
-    $transformProcess = Start-Process -FilePath ".\System\Pipeline Providers\Support\ctt.exe" -ArgumentList ("s:`"$($tempSourcePath)`"", "t:`"$($transformationPath)`"", "d:`"$($fileToTransform)`"", "p:$($variablesArgs)") -NoNewWindow -Wait -PassThru
+    $transformProcess = Start-Process -FilePath ".\System\Pipeline Providers\Support\ctt.exe" -ArgumentList ("s:`"$($tempSourcePath)`"", "t:`"$($transformationPath)`"", "d:`"$($fileToTransform)`"", "pf:`"$($tempParametersPath)`"") -NoNewWindow -Wait -PassThru
 
     Remove-Item $tempSourcePath
+    Remove-Item $tempParametersPath
 
     if($transformProcess.ExitCode -ne 0) {
         Log-Error "A problem occurred applying XDT transformation. Aborting." -Abort
