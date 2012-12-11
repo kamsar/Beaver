@@ -68,7 +68,7 @@ Write-Host "Using working directory $($WorkingDirectory)" -ForegroundColor DarkC
 
 
 if($MSBuildConfiguration -eq $null) {
-    $MSBuildConfiguration = "Debug"
+    $MSBuildConfiguration = "Release"
 }
 
 Write-Host "Using MSBuild configuration $($MSBuildConfiguration)" -ForegroundColor DarkCyan
