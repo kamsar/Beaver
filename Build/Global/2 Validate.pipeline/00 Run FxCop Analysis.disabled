@@ -1,0 +1,25 @@
+# This script will execute FxCop against assemblies in the codebase
+# You'll need a copy of FxCop to use it.
+
+function Run-BuildForCodeAnalysis {
+    Import-Module $PSScriptRoot\..\..\System\Build-Project.psm1
+    Build-Project $SourceDirectory\*.sln "Debug" @("Build") $null "4.0"
+}
+
+function Run-FxCop($projectFile, $assemblies, $dependencyDirectory, $outputFile) {
+    $fxCop = "$PSScriptRoot\..\..\..\Dependencies\Tools\Microsoft FxCop 10.0\FxCopCmd.exe"
+    
+    $fileArg = "`"/file:$([string]::Join('" "/file:', $assemblies))`""
+    $projectArg = "/project:$projectFile"
+    $outputArg = "/out:$outputFile"
+
+    & $fxCop $fileArg "$outputArg" "$projectArg" /console
+}
+
+$projectPath = "$PSScriptRoot\..\..\..\Dependencies\Tools\FxCopConfig.FxCop"
+$referencesPath = "$SourceWebDirectory\bin"
+$assemblies = @("$referencesPath\Example.dll", "$referencesPath\AnotherExample*.dll")
+
+Write-Host "Running debug build so we can run code analysis..."
+Run-BuildForCodeAnalysis
+Run-FxCop $projectPath $assemblies $referencesPath "$WorkingDirectory\..\FxCop.xml"

@@ -2,8 +2,10 @@
 
 param
 (
-    [string]$DeployEnvironment
+    [string]$DeployEnvironment,
+    [switch]$ExecuteRemoteDeployment = $false
 )
+
 
 $ErrorActionPreference = "Stop"
 
