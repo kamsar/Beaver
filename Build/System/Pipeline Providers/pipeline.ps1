@@ -1,3 +1,5 @@
-﻿. .\System\Invoke-Pipeline.ps1
+﻿function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
+
+. "$(PSScriptRoot)\..\Pipelines.ps1"
 
 Invoke-Pipeline $pipelineItemPath

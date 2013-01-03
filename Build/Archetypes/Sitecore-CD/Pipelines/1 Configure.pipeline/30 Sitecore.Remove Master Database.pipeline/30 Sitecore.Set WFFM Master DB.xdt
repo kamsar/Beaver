@@ -7,7 +7,7 @@
 	<sitecore>
 		<settings>
 			<!-- change the WFM master db setting if present -->
-			<setting xdt:Locator="Condition(@name='WFM.MasterDatabase' and @value='master')" xdt:Transform="SetAttributes(value)" value="{SitecoreContentDatabase:web}" />
+			<setting xdt:Locator="Condition(@name='WFM.MasterDatabase' and @value='master')" xdt:Transform="SetAttributes(value)" value="{SitecoreContentDatabase}" />
 		</settings>
 	</sitecore>
 </configuration>

@@ -1,3 +1,5 @@
+function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
+
 $variables = Get-Variable | Where-Object { 
     [Text.RegularExpressions.Regex]::IsMatch($_.Name, '[A-Za-z0-9]+') `
     -and $_.Name -ne "StackTrace" `
@@ -15,6 +17,6 @@ foreach($var in $variables){
    $buildProps.Add($var.Name, $var.Value)
 }
 
-. '.\System\Build-Project.ps1'
+Import-Module $(PSScriptRoot)\..\Build-Project.psm1
 
 Build-Project $pipelineItemPath $MSBuildConfiguration $null $buildProps

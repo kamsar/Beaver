@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+  
+	<!-- see the Sitecore Cache Configuration Reference, presently at http://sdn.sitecore.net/upload/sitecore6/66/cache_configuration_reference_sc66-a4.pdf, for more info -->
+	
+	<sitecore>
+		<databases>
+			<database xdt:Locator="Match(id)" id="master">
+				<cacheSizes>
+					<!-- DATA: Sitecore recommends >= 150MB for CD, >= 100MB for CM -->
+					<data xdt:Transform="Replace">{MasterDataCacheSize}</data>
+					
+					<!-- ITEMS: Sitecore recommends >= 125MB for CD, >= 75MB for CM (master), >= 50MB for CM (web) -->
+					<items xdt:Transform="Replace">{MasterItemsCacheSize}</items>
+				</cacheSizes>
+			</database>
+			
+			<database xdt:Locator="Match(id)" id="web">
+				<cacheSizes>
+					<!-- DATA: Sitecore recommends >= 150MB for CD, >= 100MB for CM -->
+					<data xdt:Transform="Replace">{WebDataCacheSize}</data>
+					
+					<!-- ITEMS: Sitecore recommends >= 125MB for CD, >= 75MB for CM (master), >= 50MB for CM (web) -->
+					<items xdt:Transform="Replace">{WebItemsCacheSize}</items>
+				</cacheSizes>
+			</database>
+		</databases>
+	</sitecore>
+</configuration>

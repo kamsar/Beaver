@@ -1,4 +1,5 @@
 ﻿# Sets default pipeline properties used for all pipelines
+$ErrorActionPreference = "Stop"
 
 if($DeployEnvironment -eq $null) {
     Write-Error "DeployEnvironment variable was not defined. It is required." -ErrorAction Stop
@@ -6,7 +7,7 @@ if($DeployEnvironment -eq $null) {
 
 Write-Host "Deploying to environment $($DeployEnvironment)" -ForegroundColor Magenta
 
-$EnvironmentDirectory = Resolve-Path ".\Environments\$($DeployEnvironment)" -ErrorAction Stop
+$EnvironmentDirectory = Resolve-Path "$PSScriptRoot\..\..\Environments\$($DeployEnvironment)" -ErrorAction Stop
 
 ############## LOADING ENVIRONMENT AND ARCHETYPE PROPERTIES FILES ###########################
 
@@ -28,7 +29,7 @@ if($DeployArchetypes -eq $null) {
 # Resolve paths to archetypes
 $ArchetypeDirectories = @()
 $DeployArchetypes | foreach {
-    $ArchetypeDirectories += Resolve-Path ".\Archetypes\$($_)" -ErrorAction Stop
+    $ArchetypeDirectories += Resolve-Path "$PSScriptRoot\..\..\Archetypes\$($_)" -ErrorAction Stop
     Write-Host "Using archetype $($_)"
 }
 
@@ -57,7 +58,7 @@ if($SourceDirectory -eq $null){
 Write-Host "Using source directory $($SourceDirectory)" -ForegroundColor DarkCyan
 
 if($WorkingDirectory -eq $null) {
-    $WorkingDirectory = Resolve-Path "..\Deploy" -ErrorAction Stop
+    $WorkingDirectory = Resolve-Path "$PSScriptRoot\..\..\..\Deploy" -ErrorAction Stop
 
     New-Item -Type Directory -Path $WorkingDirectory -Name $DeployEnvironment -ErrorAction SilentlyContinue
 

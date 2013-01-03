@@ -7,7 +7,7 @@
 	<sitecore>
 		<sites>
 			<!-- change sites whose database point to web to look at the content database (usually web, but not necessarily) -->
-			<site database="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@database='web')" xdt:Transform="SetAttributes(database)" />
+			<site database="{SitecoreContentDatabase}" analyticsDefinitions="{SitecoreContentDatabase}" xdt:Locator="Condition(@database='web')" xdt:Transform="SetAttributes(database,analyticsDefinitions)" />
 		</sites>
 	</sitecore>
 </configuration>

@@ -8,17 +8,17 @@ function Log-Error {
         [string]$message,
 
         [parameter(Mandatory=$false)]
-        [switch]$abort
+        [switch]$abort = $false
     )
 
     PROCESS {
         $global:errors += $message
 
-        if($abort) {
-            throw $message
+		Write-Host $message -ForegroundColor Red
+        
+		if($abort) {
+			exit 1
         }
-
-        Write-Host $message -ForegroundColor Red
     }
         
 }
@@ -34,10 +34,6 @@ function Log-Warning {
         $global:warnings += $message
 
         $action = "continue"
-
-        if($abort) {
-            throw $message
-        }
 
         Write-Host $message -ForegroundColor Yellow
     }

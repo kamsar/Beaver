@@ -8,10 +8,13 @@
 	<sitecore>
 		<sites>
 			<!-- change sites where database attribute point to master -->
-			<site database="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@database='master')" xdt:Transform="SetAttributes(database)" />
+			<site database="{SitecoreContentDatabase}" xdt:Locator="Condition(@database='master')" xdt:Transform="SetAttributes(database)" />
 			
 			<!-- change sites whose ContentDatabase attribute points to master -->
-			<site content="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@content='master')" xdt:Transform="SetAttributes(content)" />
+			<site content="{SitecoreContentDatabase}" xdt:Locator="Condition(@content='master')" xdt:Transform="SetAttributes(content)" />
+			
+			<!-- set the analyticsDefinitions to the content database on any site that uses the content db -->
+			<site database="{SitecoreContentDatabase}" analyticsDefinitions="{SitecoreContentDatabase}" xdt:Locator="Match(database)" xdt:Transform="SetAttributes(analyticsDefinitions)" />
 		</sites>
 	</sitecore>
 </configuration>

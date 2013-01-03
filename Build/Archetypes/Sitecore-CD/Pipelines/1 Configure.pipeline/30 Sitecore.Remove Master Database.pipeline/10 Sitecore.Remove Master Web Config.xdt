@@ -29,7 +29,7 @@
 		
 		<IDTable>
 			<!-- repoint the IDTable's connection string to the content database instead of master -->
-			<param connectionStringName="{SitecoreContentDatabase:web}" xdt:Locator="Condition(@connectionStringName='master')" xdt:Transform="SetAttributes(connectionStringName)" />
+			<param connectionStringName="{SitecoreContentDatabase}" xdt:Locator="Condition(@connectionStringName='master')" xdt:Transform="SetAttributes(connectionStringName)" />
 		</IDTable>
 	</sitecore>
 </configuration>

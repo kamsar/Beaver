@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\App_Config\Prefetch\Web.config</deploy:TargetFile>
+  
+	<!-- see the Sitecore Cache Configuration Reference, presently at http://sdn.sitecore.net/upload/sitecore6/66/cache_configuration_reference_sc66-a4.pdf, for more info -->
+	
+	<!-- WEB PREFETCH: Sitecore recommends >= 150MB for CD, >= 100MB for CM on live. Note larger prefetch caches slow app startup time, but allow for fewer post-startup performance hiccups. -->
+	<cacheSize xdt:Transform="Replace">{MasterPrefetchCacheSize}</cacheSize>
+</configuration>

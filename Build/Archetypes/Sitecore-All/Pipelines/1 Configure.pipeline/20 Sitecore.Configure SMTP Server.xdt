@@ -4,9 +4,9 @@
   
 	<sitecore>
 		<settings>
-			<setting name="MailServer" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServer:}" />
-			<setting name="MailServerUserName" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServerUsername:}" />
-			<setting name="MailServerPassword" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServerPassword:}" />
+			<setting name="MailServer" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServer}" />
+			<setting name="MailServerUserName" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServerUsername}" />
+			<setting name="MailServerPassword" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{SmtpServerPassword}" />
 		</settings>
 	</sitecore>
 </configuration>

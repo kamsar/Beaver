@@ -1,7 +1,18 @@
-﻿param($DeployEnvironment)
+﻿#requires -version 3.0
 
-function ReadDeployEnvironment() {
-    $environmentPath = ".\Environments"
+param
+(
+    [string]$DeployEnvironment
+)
+
+$ErrorActionPreference = "Stop"
+
+function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
+
+#Set-StrictMode -Version Latest
+
+function Get-DeployEnvironment() {
+    $environmentPath = "$(PSScriptRoot)\..\Environments"
 
     Write-Host "Environment to deploy was not specified. Valid environments are:" -ForegroundColor Yellow
 
@@ -15,28 +26,29 @@ function ReadDeployEnvironment() {
 
     if(!(Test-Path $candidatePath)) {
         Write-Host "Environment selected was not valid." -ForegroundColor Red
-        return ReadDeployEnvironment
+        return Get-DeployEnvironment
     }
     else {
         return $environment
     }
 }
 
-if(!$DeployEnvironment) {
-    $DeployEnvironment = ReadDeployEnvironment
+if([string]::IsNullOrWhiteSpace($DeployEnvironment)) {
+    $DeployEnvironment = Get-DeployEnvironment
 }
 
 # Start up logging
-. .\System\ScriptLogger.ps1
-Start-Transcript -Path ".\build.log"
+. "$(PSScriptRoot)\ScriptLogger.ps1"
+
+Start-Transcript -Path "$(PSScriptRoot)\..\build.log"
 
 # Load global properties files in order
-Get-ChildItem -Path .\System\Properties -Filter *.ps1 | foreach {
+Get-ChildItem -Path "$(PSScriptRoot)\Properties" -Filter *.ps1 | foreach {
     Write-Host "Loading global properties file $($_.FullName)" -ForegroundColor DarkGreen
     . $_.FullName
 }
 
-. .\System\Invoke-Pipeline-Cascade.ps1
+. "$(PSScriptRoot)\Pipelines.ps1"
 
 # Get all the cascade pipeline directories (e.g. all archetypes' pipelines and the environment's pipeline)
 $CascadePipelineDirectories = @()
@@ -47,7 +59,7 @@ $ArchetypeDirectories | foreach {
 $CascadePipelineDirectories += Join-Path $EnvironmentDirectory "Pipelines"
 
 # Make magic occur - invoke all global pipelines, followed by any cascading extensions and cascading custom pipelines
-Invoke-Pipeline-Cascade ".\Global" $CascadePipelineDirectories
+Invoke-Pipeline-Cascade "$(PSScriptRoot)\..\Global" $CascadePipelineDirectories
 
 Write-Warning-Summary
 Write-Error-Summary
