@@ -21,9 +21,12 @@ function Invoke-Pipeline([string]$path)
 
         $pipelineItemPath = $_.FullName
         
-        & $providerPath
-
-        if($LASTEXITCODE -ne 0) {
+        try {
+            & $providerPath
+        }
+        catch {
+            Write-Host "Error occurred running $pipelineItemPath (exception)." -ForegroundColor Red
+            Write-Host $_ -ForegroundColor Red
             exit 1
         }
     }

@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.v4.0">
       <Private>False</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Web.Publishing.Tasks">
       <HintPath>Dependencies\Microsoft.Web.Publishing.Tasks.Dll</HintPath>
@@ -51,6 +52,8 @@
     <Compile Include="Build\BuildResult.cs" />
     <Compile Include="ConfigTransformation\InPlaceTransformer.cs" />
     <Compile Include="ConfigTransformation\TransformResult.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -87,7 +87,17 @@ Make sure you have a deploy:TargetFile element in it with the correct namespace 
 		Write-Host "Transforming $([string]::Join(", ", $specs)) using transform file $transformFilePath"
         $results = [Beaver.ConfigTransformation.InPlaceTransformer]::Transform($transformFilePath, $transformArgs, $specs)
 
-        $results.Messages | Write-Host
+        $results.Messages  | foreach {
+            if($_.Type -eq "Error") {
+                Write-Host $_.Text -ForegroundColor Red
+            }
+            elseif($_.Type -eq "Warning") {
+                Write-Host $_.Text -ForegroundColor Yellow
+            }
+            else { 
+                Write-Host $_.Text
+            }
+        }
 
         if(-not $results.Success) {
             Log-Error "Errors occurred during transformation" -Abort

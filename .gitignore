@@ -2,3 +2,7 @@
 Deploy*
 /Build/Dependencies
 /Build/build.log
+/Build/System/Support/Beaver/Dependencies/Microsoft.*.dll
+/Build/System/Support/Beaver/bin/Debug
+/Build/System/Support/Beaver/bin/Microsoft.*.dll
+/Build/System/Support/Beaver/obj

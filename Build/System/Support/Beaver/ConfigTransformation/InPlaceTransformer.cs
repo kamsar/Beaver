@@ -6,6 +6,7 @@ using Microsoft.Web.Publishing.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
+using TransformMessageType = Microsoft.Web.Publishing.Tasks.MessageType;
 
 namespace Beaver.ConfigTransformation
 {
@@ -88,29 +89,29 @@ namespace Beaver.ConfigTransformation
 		{
 			public CollectionXmlTransformationLogger()
 			{
-				Messages = new List<string>();
+				Messages = new List<Message>();
 				HasErrors = false;
 			}
 
-			public IList<string> Messages { get; private set; }
+			public IList<Message> Messages { get; private set; }
 			public bool HasErrors { get; private set; }
 
-			private void WriteLine(string message, params object[] args)
+			private void WriteLine(string message, MessageType type, params object[] args)
 			{
 				if (args != null && args.Length > 0)
-					Messages.Add(string.Format(message, args));
+					Messages.Add(new Message(string.Format(message, args), type));
 				else
-					Messages.Add(message);
+					Messages.Add(new Message(message, type));
 			}
 
-			public void EndSection(MessageType type, string message, params object[] messageArgs)
+			public void EndSection(TransformMessageType type, string message, params object[] messageArgs)
 			{
 				EndSection(message, messageArgs);
 			}
 
 			public void EndSection(string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Info, messageArgs);
 			}
 
 			public void LogError(string file, int lineNumber, int linePosition, string message, params object[] messageArgs)
@@ -125,7 +126,7 @@ namespace Beaver.ConfigTransformation
 
 			public void LogError(string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Error, messageArgs);
 				HasErrors = true;
 			}
 
@@ -141,44 +142,44 @@ namespace Beaver.ConfigTransformation
 
 			public void LogErrorFromException(Exception ex)
 			{
-				WriteLine(ex.Message);
-				WriteLine(ex.StackTrace);
+				WriteLine(ex.Message, MessageType.Error);
+				WriteLine(ex.StackTrace, MessageType.Info);
 				HasErrors = true;
 			}
 
-			public void LogMessage(MessageType type, string message, params object[] messageArgs)
+			public void LogMessage(TransformMessageType type, string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				LogMessage(message, messageArgs);
 			}
 
 			public void LogMessage(string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Info, messageArgs);
 			}
 
 			public void LogWarning(string file, int lineNumber, int linePosition, string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				LogWarning(message, messageArgs);
 			}
 
 			public void LogWarning(string file, string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				LogWarning(message, messageArgs);
 			}
 
 			public void LogWarning(string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Warning, messageArgs);
 			}
 
-			public void StartSection(MessageType type, string message, params object[] messageArgs)
+			public void StartSection(TransformMessageType type, string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Info, messageArgs);
 			}
 
 			public void StartSection(string message, params object[] messageArgs)
 			{
-				WriteLine(message, messageArgs);
+				WriteLine(message, MessageType.Info, messageArgs);
 			}
 		}
 	}

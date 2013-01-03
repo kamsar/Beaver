@@ -11,18 +11,20 @@ function Build-Project([string]$projectPath, [string]$configuration, [string[]]$
     }
 
     $projectPath = (Resolve-Path $projectPath).Path
-exit 1
-    $result = [Beaver.Build]::BuildHelper.BuildProject($projectPath, $configuration, $targets, $properties, $toolsVersion)
+
+    Write-Host "Starting build of $projectPath..."
+
+    $result = [Beaver.Build.BuildHelper]::BuildProject($projectPath, $configuration, $targets, $properties, $toolsVersion)
 
     $result.Messages | foreach {
-        if($_.TrimStart().StartsWith("WARNING")) {
-            Log-Warning $_.Replace("WARNING: ", [string]::Empty)
+        if($_.Type -eq "Error") {
+            Write-Host $_.Text -ForegroundColor Red
         }
-        elseif($_.TrimStart().StartsWith("ERROR")) {
-            Write-Host $_ -ForegroundColor Red            et
+        elseif($_.Type -eq "Warning") {
+            Write-Host $_.Text -ForegroundColor Yellow
         }
         else { 
-            Write-Host $_ 
+            Write-Host $_.Text
         }
     }
 

@@ -19,7 +19,7 @@ namespace Beaver.Build
 		{
 			if (!File.Exists(projectPath))
 			{
-				return new BuildResult(new string[] { "Couldn't resolve build file $($projectPath)." }, false);
+				throw new ArgumentException("Project path " + projectPath + " did not exist.");
 			}
 
 			if (string.IsNullOrEmpty(toolsVersion))
@@ -51,6 +51,8 @@ namespace Beaver.Build
 
 			parameters.Loggers = projects.Loggers;
 
+			logger.AddMessage(new Message(string.Format("Building {0} ({1}), {2} targets using {3} tools", projectPath, configuration, string.Join(", ", targets), toolsVersion), MessageType.Info));
+
 			var result = BuildManager.DefaultBuildManager.Build(parameters, buildRequest);
 
 			return new BuildResult(logger.Messages, result.OverallResult == BuildResultCode.Success);
@@ -58,7 +60,8 @@ namespace Beaver.Build
 
 		private class MSBuildCollectionLogger : Logger
 		{
-			private List<string> _messages = new List<string>();
+			private List<Message> _messages = new List<Message>();
+
 			public override void Initialize(IEventSource eventSource)
 			{
 				eventSource.ProjectStarted += new ProjectStartedEventHandler(eventSource_ProjectStarted);
@@ -69,18 +72,23 @@ namespace Beaver.Build
 				eventSource.ProjectFinished += new ProjectFinishedEventHandler(eventSource_ProjectFinished);
 			}
 
-			public ReadOnlyCollection<string> Messages { get { return _messages.AsReadOnly(); } }
+			public void AddMessage(Message message)
+			{
+				_messages.Add(message);
+			}
+
+			public ReadOnlyCollection<Message> Messages { get { return _messages.AsReadOnly(); } }
 
 			void eventSource_ErrorRaised(object sender, BuildErrorEventArgs e)
 			{
-				string line = String.Format("ERROR: {0}({1},{2}): ", e.File, e.LineNumber, e.ColumnNumber);
-				WriteLine(line, e);
+				string line = String.Format("{0}({1},{2}): ", e.File, e.LineNumber, e.ColumnNumber);
+				WriteLine(line, e, MessageType.Error);
 			}
 
 			void eventSource_WarningRaised(object sender, BuildWarningEventArgs e)
 			{
 				string line = String.Format("WARNING: {0}({1},{2}): ", e.File, e.LineNumber, e.ColumnNumber);
-				WriteLine(line, e);
+				WriteLine(line, e, MessageType.Warning);
 			}
 
 			void eventSource_MessageRaised(object sender, BuildMessageEventArgs e)
@@ -92,7 +100,7 @@ namespace Beaver.Build
 					|| (e.Importance == MessageImportance.Low && IsVerbosityAtLeast(LoggerVerbosity.Detailed))
 					)
 				{
-					WriteLine(String.Empty, e);
+					WriteLine(String.Empty, e, MessageType.Info);
 				}
 			}
 
@@ -102,18 +110,18 @@ namespace Beaver.Build
 
 			void eventSource_ProjectStarted(object sender, ProjectStartedEventArgs e)
 			{
-				WriteLine(String.Empty, e);
+				WriteLine(String.Empty, e, MessageType.Info);
 			}
 
 			void eventSource_ProjectFinished(object sender, ProjectFinishedEventArgs e)
 			{
-				WriteLine(String.Empty, e);
+				WriteLine(String.Empty, e, MessageType.Info);
 			}
 
-			private void WriteLine(string line, BuildEventArgs e)
+			private void WriteLine(string line, BuildEventArgs e, MessageType type)
 			{
 				string message = line + e.Message;
-				_messages.Add(message);
+				_messages.Add(new Message(message, type));
 			}
 		}
 	}

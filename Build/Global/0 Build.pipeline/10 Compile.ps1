@@ -8,4 +8,4 @@ $buildProps = New-Object "System.Collections.Generic.Dictionary[string,string]"
 
 Import-Module $PSScriptRoot\..\..\System\Build-Project.psm1
 
-Build-Project $targetFile $MSBuildConfiguration @("Build") $buildProps
+Build-Project $targetFile $MSBuildConfiguration @("Rebuild") $buildProps "4.0"

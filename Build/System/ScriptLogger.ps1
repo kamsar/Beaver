@@ -17,6 +17,7 @@ function Log-Error {
 		Write-Host $message -ForegroundColor Red
         
 		if($abort) {
+            throw $message
 			exit 1
         }
     }
