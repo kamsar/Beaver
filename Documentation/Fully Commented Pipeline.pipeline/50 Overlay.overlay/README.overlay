@@ -1,0 +1,7 @@
+An overlay is a buildlet that allows you to copy files into the output working directory.
+
+It's an "overlay" because you place file(s) in the same relative directory you want them to end up in, eg.
+
+MyOverlay.overlay\Website\Web.config would be copied and overwrite (or create) the resultant Web.config file in the output.
+
+This README.overlay file is specifically ignored when copying the overlay, so you can create your own to document what's in an overlay.
