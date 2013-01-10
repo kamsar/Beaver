@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<system.webServer>
+		<rewrite>
+		  <rules>
+				<!-- this rule will cause 404s if you try to access the Sitecore admin from anywhere but localhost - requires IIS rewrite module -->
+				<rule xdt:Transform="Insert" name="Deny remote access to admin" patternSyntax="ECMAScript" stopProcessing="true">
+					<match url="sitecore/(admin|login|shell)*" />
+					<conditions>
+						<add input="{REMOTE_ADDR}" pattern="127.0.0.1" negate="true" />
+					</conditions>
+					<action type="CustomResponse" statusCode="404" statusReason="Not Found" statusDescription="Not Found" />
+				</rule>
+		  </rules>
+	  </rewrite>
+	</system.webServer>
+</configuration>
+

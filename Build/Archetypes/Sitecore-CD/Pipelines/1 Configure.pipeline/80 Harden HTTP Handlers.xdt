@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
+	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
+
+	<system.webServer>
+		<handlers>
+			<!-- 
+				Causes various sorts of files served by IIS by default that Sitecore shouldn't server to get 401s 
+				See https://github.com/Sitecore/PowerShell-Script-Library
+				
+				Note: this assumes you're running IIS in Integrated mode; there are additional handlers required for Classic pipeline,
+				but you aren't using that right? RIGHT? :)
+			-->
+			<add xdt:Transform="Insert" path ="*.mrt" verb="*" type="System.Web.HttpForbiddenHandler" name="mrt" preCondition="integratedMode" />
+			<add xdt:Transform="Insert" path="*.config.xml" verb="*" type="System.Web.HttpForbiddenHandler" name="config.xml" preCondition="integratedMode" />
+			<add xdt:Transform="Insert" path="*.xslt" verb="*" type="System.Web.HttpForbiddenHandler" name="xslt" preCondition="integratedMode" />
+			<add xdt:Transform="Insert" path="*.xml" verb="*" type="System.Web.HttpForbiddenHandler" name="xml" preCondition="integratedMode" />
+		</handlers>
+	</system.webServer>
+</configuration>
+
