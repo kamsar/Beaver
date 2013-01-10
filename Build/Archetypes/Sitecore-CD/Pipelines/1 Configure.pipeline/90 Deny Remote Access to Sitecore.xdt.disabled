@@ -2,6 +2,8 @@
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:deploy="http://github.com/kamsar/xdt-deploy">
 	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
 
+	<!-- NOTE: this is disabled by default because you must have both IIS rewrite installed, and the system.webServer/rewrite/rules node present in web.config
+	neither of these are there by default so this is disabled for safety. -->
 	<system.webServer>
 		<rewrite>
 		  <rules>
