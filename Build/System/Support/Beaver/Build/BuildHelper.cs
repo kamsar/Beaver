@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -41,7 +42,7 @@ namespace Beaver.Build
 				if (defaultTargets != null) targets = defaultTargets.Value.Split(';');
 			}
 
-			var logger = new MSBuildCollectionLogger();
+			var logger = new MsBuildCollectionLogger();
 			var buildRequest = new BuildRequestData(projectPath, properties, toolsVersion, targets, null);
 			var projects = new ProjectCollection();
 
@@ -51,6 +52,7 @@ namespace Beaver.Build
 
 			parameters.Loggers = projects.Loggers;
 
+			Debug.Assert(targets != null, "dsfsdsf");
 			logger.AddMessage(new Message(string.Format("Building {0} ({1}), {2} targets using {3} tools", projectPath, configuration, string.Join(", ", targets), toolsVersion), MessageType.Info));
 
 			var result = BuildManager.DefaultBuildManager.Build(parameters, buildRequest);
@@ -58,18 +60,19 @@ namespace Beaver.Build
 			return new BuildResult(logger.Messages, result.OverallResult == BuildResultCode.Success);
 		}
 
-		private class MSBuildCollectionLogger : Logger
+		private class MsBuildCollectionLogger : Logger
 		{
-			private List<Message> _messages = new List<Message>();
+			private readonly List<Message> _messages = new List<Message>();
 
 			public override void Initialize(IEventSource eventSource)
 			{
-				eventSource.ProjectStarted += new ProjectStartedEventHandler(eventSource_ProjectStarted);
-				eventSource.TaskStarted += new TaskStartedEventHandler(eventSource_TaskStarted);
-				eventSource.MessageRaised += new BuildMessageEventHandler(eventSource_MessageRaised);
-				eventSource.WarningRaised += new BuildWarningEventHandler(eventSource_WarningRaised);
-				eventSource.ErrorRaised += new BuildErrorEventHandler(eventSource_ErrorRaised);
-				eventSource.ProjectFinished += new ProjectFinishedEventHandler(eventSource_ProjectFinished);
+				if(eventSource == null) throw new ArgumentNullException("eventSource");
+
+				eventSource.ProjectStarted += eventSource_ProjectStarted;
+				eventSource.MessageRaised += eventSource_MessageRaised;
+				eventSource.WarningRaised += eventSource_WarningRaised;
+				eventSource.ErrorRaised += eventSource_ErrorRaised;
+				eventSource.ProjectFinished += eventSource_ProjectFinished;
 			}
 
 			public void AddMessage(Message message)
@@ -102,10 +105,6 @@ namespace Beaver.Build
 				{
 					WriteLine(String.Empty, e, MessageType.Info);
 				}
-			}
-
-			void eventSource_TaskStarted(object sender, TaskStartedEventArgs e)
-			{
 			}
 
 			void eventSource_ProjectStarted(object sender, ProjectStartedEventArgs e)

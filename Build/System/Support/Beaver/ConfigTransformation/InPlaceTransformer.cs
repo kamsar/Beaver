@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.Web.Publishing.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Xml;
-using TransformMessageType = Microsoft.Web.Publishing.Tasks.MessageType;
+using Microsoft.Web.XmlTransform;
+using TransformMessageType = Microsoft.Web.XmlTransform.MessageType;
 
 namespace Beaver.ConfigTransformation
 {
@@ -31,13 +29,13 @@ namespace Beaver.ConfigTransformation
 
 			transformText = ParameterizeText(transformText, parameters);
 
-			XmlTransformation transformation = new XmlTransformation(transformText, false, logger);
+			var transformation = new XmlTransformation(transformText, false, logger);
 
 			foreach (var file in targetFiles)
 			{
 				var input = File.ReadAllText(file);
 
-				XmlTransformableDocument document = new XmlTransformableDocument();
+				var document = new XmlTransformableDocument();
 				document.PreserveWhitespace = true;
 				
 				document.LoadXml(input);
@@ -55,12 +53,12 @@ namespace Beaver.ConfigTransformation
 			return new TransformResult(logger.Messages.ToArray(), !logger.HasErrors);
 		}
 
-		static readonly Regex rePattern = new Regex(@"(\{+)([^\}]+)(\}+)", RegexOptions.Compiled);
+		static readonly Regex ParameterPattern = new Regex(@"(\{+)([^\}]+)(\}+)", RegexOptions.Compiled);
 		static string ParameterizeText(string input, IDictionary<string, string> parameters)
 		{
 			if (parameters == null || parameters.Keys.Count == 0) return input;
 
-			return rePattern.Replace(input, match =>
+			return ParameterPattern.Replace(input, match =>
 			{
 				int lCount = match.Groups[1].Value.Length,
 					rCount = match.Groups[3].Value.Length;
