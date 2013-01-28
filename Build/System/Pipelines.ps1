@@ -9,7 +9,8 @@ function Invoke-Pipeline([string]$path)
 
     Write-Host "Pipeline $($pipelinePath) executing." -ForegroundColor Green
 
-    Get-ChildItem  "$($pipelinePath)\*" | Sort -Property $_.Name | foreach { 
+	# Sorting fix; see http://stackoverflow.com/questions/5427506/how-to-sort-by-file-name-the-same-way-windows-explorer-does
+    Get-ChildItem  "$($pipelinePath)\*" | Sort-Object { [regex]::Replace($_.Name, '\d+', { $args[0].Value.PadLeft(20) }) } | foreach { 
         Write-Host "Executing pipeline item $($_.Name)" -ForegroundColor Cyan
     
         $providerPath = "$(PSScriptRoot)\Pipeline Providers\$($_.Extension.TrimStart('.')).ps1"
