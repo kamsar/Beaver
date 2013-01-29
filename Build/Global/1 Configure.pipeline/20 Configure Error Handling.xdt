@@ -3,10 +3,10 @@
 	<deploy:TargetFile>Website\Web.config</deploy:TargetFile>
 	
 	<system.web>
-		<customErrors xdt:Transform="SetAttributes(mode)" mode="{CustomErrorsMode:RemoteOnly}" />
+		<customErrors xdt:Transform="SetAttributes(mode)" mode="{CustomErrorsMode}" />
 	</system.web>
 	
 	<system.webServer>
-		<httpErrors xdt:Transform="SetAttributes(errorMode)" errorMode="{IISErrorsMode:DetailedLocalOnly}" />
+		<httpErrors xdt:Transform="SetAttributes(errorMode)" errorMode="{IISErrorsMode}" />
 	</system.webServer>
 </configuration>

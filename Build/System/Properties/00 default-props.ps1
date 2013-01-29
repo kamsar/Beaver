@@ -82,7 +82,12 @@ if($WebWorkingDirectory -eq $null) {
     $WebWorkingDirectory = Join-Path $WorkingDirectory "Website"
 }
 
+if($CustomErrorsMode -eq $null) {
+    $CustomErrorsMode = "RemoteOnly"
+}
 
-
+if($IISErrorsMode -eq $null) {
+    $IISErrorsMode = "DetailedLocalOnly"
+}
 
 
