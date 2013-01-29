@@ -1,6 +1,6 @@
 ﻿function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
-function Invoke-Pipeline([string]$path)
+function Invoke-Pipeline([string]$path, [switch]$Rethrow)
 {
     Test-Path $path -ErrorAction Stop > $null
 
@@ -26,8 +26,17 @@ function Invoke-Pipeline([string]$path)
             & $providerPath
         }
         catch {
-            Write-Host "Error occurred running $pipelineItemPath (exception)." -ForegroundColor Red
-            Write-Host $_ -ForegroundColor Red
+            # if the exception isn't a rethrown subpipeline issue, show the message
+            if($_.Exception.Message -ne "RETHROWN_PIPELINE_EXCEPTION") {
+                Write-Host "Error occurred running $pipelineItemPath." -ForegroundColor Red
+				Write-Host $_ -ForegroundColor Red
+			}
+			
+            if($Rethrow) {
+                # This is used so that subpipelines can properly bubble up errors (exit 1 from a subpipeline simply exits that subpipeline, but an exception persists)
+                throw "RETHROWN_PIPELINE_EXCEPTION"
+            }
+
             exit 1
         }
     }

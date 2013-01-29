@@ -2,4 +2,4 @@
 
 . "$(PSScriptRoot)\..\Pipelines.ps1"
 
-Invoke-Pipeline $pipelineItemPath
+Invoke-Pipeline $pipelineItemPath -Rethrow
