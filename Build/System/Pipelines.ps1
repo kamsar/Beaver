@@ -30,8 +30,25 @@ function Invoke-Pipeline([string]$path, [switch]$Rethrow)
             if($_.Exception.Message -ne "RETHROWN_PIPELINE_EXCEPTION") {
                 Write-Host "Error occurred running $pipelineItemPath." -ForegroundColor Red
 				Write-Host $_ -ForegroundColor Red
+				if($_.Exception -ne $null) {
+					Write-Host "Exception:" -ForegroundColor Yellow
+					Write-Host $_.Exception -ForegroundColor White
+					$inner = $_.Exception.InnerException
+					if($inner -ne $null) {
+						Write-Host "Inner exception: " -ForegroundColor DarkYellow
+						Write-Host $inner -ForegroundColor Gray
+						$inner2 = $inner.InnerException
+						if($inner2 -ne $null) {
+							Write-Host "Inner inner exception: " -ForegroundColor DarkYellow
+							Write-Host $inner2 -ForegroundColor DarkGray
 			}
-			
+					}
+				}
+				if(![string]::IsNullOrEmpty($_.ScriptStackTrace)) {
+					Write-Host "Script Stack Trace:" -ForegroundColor Yellow
+					Write-Host $_.ScriptStackTrace -ForegroundColor White
+				}
+            }
             if($Rethrow) {
                 # This is used so that subpipelines can properly bubble up errors (exit 1 from a subpipeline simply exits that subpipeline, but an exception persists)
                 throw "RETHROWN_PIPELINE_EXCEPTION"
