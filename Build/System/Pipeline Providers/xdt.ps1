@@ -57,6 +57,12 @@ function Transform-Xml($transformFilePath)
 	$rootPaths = Select-Xml -Xml $transformFile -Namespace $ns -XPath "//deploy:TargetFile" | Select -ExpandProperty Node | Select -ExpandProperty InnerText
 	$errorIfTargetIsMissing = Select-Xml -Xml $transformFile -Namespace $ns -XPath "//deploy:MissingFileError" | Select -ExpandProperty Node | Select -ExpandProperty InnerText
 	$condition = Select-Xml -Xml $transformFile -Namespace $ns -XPath "//deploy:Condition" | Select -ExpandProperty Node | Select -ExpandProperty InnerText
+	$preserveFormatting = Select-Xml -Xml $transformFile -Namespace $ns -XPath "//deploy:PreserveFormatting" | Select -ExpandProperty Node | Select -ExpandProperty InnerText
+	if([string]::IsNullOrEmpty($preserveFormatting)) {
+		$preserveFormatting = $true
+	} else {
+		$preserveFormatting = [Boolean]::Parse($preserveFormatting)
+	}
 
 	if([string]::IsNullOrEmpty($rootPaths)) {
 		Log-Warning @"
@@ -85,7 +91,7 @@ Make sure you have a deploy:TargetFile element in it with the correct namespace 
 		$transformArgs = Get-Transform-Args
 		
 		Write-Host "Transforming $([string]::Join(", ", $specs)) using transform file $transformFilePath"
-        $results = [Beaver.ConfigTransformation.InPlaceTransformer]::Transform($transformFilePath, $transformArgs, $specs)
+        $results = [Beaver.ConfigTransformation.InPlaceTransformer]::Transform($transformFilePath, $transformArgs, $specs, $preserveFormatting)
 
         $results.Messages  | foreach {
             if($_.Type -eq "Error") {

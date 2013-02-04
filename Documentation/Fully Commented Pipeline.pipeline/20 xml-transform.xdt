@@ -32,6 +32,9 @@
 	<!-- this optional parameter contains a PowerShell expression that should evaluate to true or false. If it evaluates to false, the transformation is skipped -->
 	<deploy:Condition>$FooValue -eq $true</deploy:Condition>
 	
+	<!-- you can optionally control whether the transform attempts to preserve existing document formatting (default: true) -->
+	<deploy:PreserveFormatting>false</deploy:PreserveFormatting>
+	
 	<!-- for the sake of demonstration, remove the configuration/connectionStrings element -->
 	<connectionStrings xdt:Transform="Remove" />
 	

@@ -13,7 +13,7 @@ namespace Beaver.ConfigTransformation
 	/// </summary>
 	public static class InPlaceTransformer
 	{
-		public static TransformResult Transform(string transformationPath, IDictionary<string, string> parameters, string[] targetFiles)
+		public static TransformResult Transform(string transformationPath, IDictionary<string, string> parameters, string[] targetFiles, bool preserveWhitespace = true)
 		{
 			if (!File.Exists(transformationPath)) throw new ArgumentException("Transformation path did not exist");
 			
@@ -31,23 +31,32 @@ namespace Beaver.ConfigTransformation
 
 			var transformation = new XmlTransformation(transformText, false, logger);
 
-			foreach (var file in targetFiles)
+			try
 			{
-				var input = File.ReadAllText(file);
-
-				var document = new XmlTransformableDocument();
-				document.PreserveWhitespace = true;
-				
-				document.LoadXml(input);
-				
-				transformation.Apply(document);
-
-				if(logger.HasErrors) break;
-
-				if (document.IsChanged)
+				foreach (var file in targetFiles)
 				{
-					document.Save(file);
+					var input = File.ReadAllText(file);
+
+					var document = new XmlTransformableDocument();
+					document.PreserveWhitespace = preserveWhitespace;
+
+					document.LoadXml(input);
+
+					transformation.Apply(document);
+
+					if (logger.HasErrors) break;
+
+					if (document.IsChanged)
+					{
+						document.Save(file);
+					}
 				}
+			}
+			catch (Exception ex)
+			{
+				throw new XmlTransformationException(
+					"Transform failed. Log output was: " +
+					string.Join("\n", logger.Messages.Select(x => x.Type.ToString() + ": " + x.Text)), ex);
 			}
 
 			return new TransformResult(logger.Messages.ToArray(), !logger.HasErrors);
