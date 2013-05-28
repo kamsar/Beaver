@@ -4,7 +4,7 @@ function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
 Add-Type -Path "$(PSScriptRoot)\Support\Beaver\bin\Beaver.dll"
 
-function Build-Project([string]$projectPath, [string]$configuration, [string[]]$targets, [Collections.Generic.Dictionary[string,string]]$properties, [string]$toolsVersion) {
+function Update-Build([string]$projectPath, [string]$configuration, [string[]]$targets, [Collections.Generic.Dictionary[string,string]]$properties, [string]$toolsVersion) {
     
     if(!(Test-Path $projectPath)) { 
         Write-Error "Couldn't resolve build file $($projectPath)." -ErrorAction Stop
@@ -34,4 +34,4 @@ function Build-Project([string]$projectPath, [string]$configuration, [string[]]$
     }
 }
 
-Export-ModuleMember -Function Build-Project
+Export-ModuleMember -Function Update-Build

@@ -2,8 +2,8 @@
 # You'll need a copy of FxCop to use it.
 
 function Run-BuildForCodeAnalysis {
-    Import-Module $PSScriptRoot\..\..\System\Build-Project.psm1
-    Build-Project $SourceDirectory\*.sln "Debug" @("Build") $null "4.0"
+    Import-Module $PSScriptRoot\..\..\System\Update-Build.psm1
+    Update-Build $SourceDirectory\*.sln "Debug" @("Build") $null "4.0"
 }
 
 function Run-FxCop($projectFile, $assemblies, $dependencyDirectory, $outputFile) {
@@ -13,7 +13,7 @@ function Run-FxCop($projectFile, $assemblies, $dependencyDirectory, $outputFile)
     $projectArg = "/project:$projectFile"
     $outputArg = "/out:$outputFile"
 
-    & $fxCop $fileArg "$outputArg" "$projectArg" /console
+    & $fxCop $fileArg "$outputArg" "$projectArg" /console 2>&1 | out-host
 }
 
 $projectPath = "$PSScriptRoot\..\..\..\Dependencies\Tools\FxCopConfig.FxCop"

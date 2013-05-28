@@ -17,6 +17,6 @@ foreach($var in $variables){
    $buildProps.Add($var.Name, $var.Value)
 }
 
-Import-Module $(PSScriptRoot)\..\Build-Project.psm1
+Import-Module $(PSScriptRoot)\..\Update-Build.psm1
 
-Build-Project $pipelineItemPath $MSBuildConfiguration $null $buildProps
+Update-Build $pipelineItemPath $MSBuildConfiguration $null $buildProps
