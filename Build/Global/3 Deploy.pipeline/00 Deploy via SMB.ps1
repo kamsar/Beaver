@@ -6,13 +6,17 @@ if($RemoteDeployPath -and $ExecuteRemoteDeployment) {
         Write-Host "Deploying to $_ via filesystem/SMB..."
 		
 		# Copy the website folder using mirror (will purge old or deleted files)
-        robocopy $WebWorkingDirectory $_\Website /XA:HS /MIR /NDL /XD .git .svn aspnet_client /XF *.ai *.psd *.fla Thumbs.db /NP /R:20
+        robocopy $WebWorkingDirectory $_\Website /XA:HS /MIR /NDL /XD .git .svn aspnet_client /XF *.ai *.psd *.fla Thumbs.db /NP /R:20 2>&1 | out-host
+		
+		if($LASTEXITCODE -gt 7) {
+			Log-Error "Robocopy threw an error during remote deployment. Aborting." -Abort
+		}
 		
 		# Copy over any other folders alongside web simply overwriting existing (preserves out of webroot logs, indexes, etc)
-		robocopy $WorkingDirectory $_ /XA:HS /E /NDL /XD .git .svn aspnet_client /XF *.ai *.psd *.fla Thumbs.db /NP /R:20
+		robocopy $WorkingDirectory $_ /XA:HS /E /NDL /XD .git .svn aspnet_client /XF *.ai *.psd *.fla Thumbs.db /NP /R:20 2>&1 | out-host
+		
+		if($LASTEXITCODE -gt 7) {
+			Log-Error "Robocopy threw an error during remote deployment. Aborting." -Abort
+		}
     }
-}
-
-if($LASTEXITCODE -gt 7) {
-    Log-Error "Robocopy threw an error during remote deployment. Aborting." -Abort
 }
