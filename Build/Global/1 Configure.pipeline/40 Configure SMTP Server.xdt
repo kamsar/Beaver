@@ -5,12 +5,8 @@
 	<system.net>
 		<mailSettings>
 			<smtp>
-				<network xdt:Transform="SetAttributes(host,userName,password,port)" host="{SmtpServer:}" userName="{SmtpServerUserName:}" password="{SmtpServerPassword:}" port="{SmtpServerPort:25}" />
+				<network xdt:Transform="SetAttributes(host,userName,password,port,enableSsl)" host="{SmtpServer}" userName="{SmtpServerUserName}" password="{SmtpServerPassword}" port="{SmtpServerPort}" enableSsl="{SmtpServerEnableSsl}" />
 			</smtp>
 		</mailSettings>
 	</system.net>
-	
-	<appSettings>
-		<add key="Email.RedirectRecipient" xdt:Transform="Remove()" xdt:Locator="Match(key)" />
-	</appSettings>
 </configuration>
