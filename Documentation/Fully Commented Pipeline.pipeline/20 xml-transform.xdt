@@ -40,6 +40,6 @@
 	
 	<appSettings>
 		<!-- for the sake of demonstration, set the "Foo" appSetting to the $FooValue PS variable. If the variable does not exist, an empty string will replace it. -->
-		<add name="Foo" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(name)" value="{FooValue}" />
+		<add key="Foo" xdt:Transform="SetAttributes(value)" xdt:Locator="Match(key)" value="{FooValue}" />
 	</appSettings>
 </configuration>
