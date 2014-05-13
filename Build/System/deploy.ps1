@@ -3,7 +3,8 @@
 param
 (
     [string]$DeployEnvironment,
-    [switch]$ExecuteRemoteDeployment = $false
+    [switch]$ExecuteRemoteDeployment = $false,
+    [switch]$Interactive = $false
 )
 
 
@@ -61,7 +62,7 @@ $ArchetypeDirectories | foreach {
 $CascadePipelineDirectories += Join-Path $EnvironmentDirectory "Pipelines"
 
 # Make magic occur - invoke all global pipelines, followed by any cascading extensions and cascading custom pipelines
-Invoke-Pipeline-Cascade "$(PSScriptRoot)\..\Global" $CascadePipelineDirectories
+Invoke-PipelineCascade "$(PSScriptRoot)\..\Global" $CascadePipelineDirectories -Interactive:$Interactive
 
 Write-Warning-Summary
 Write-Error-Summary

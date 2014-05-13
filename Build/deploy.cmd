@@ -1,5 +1,3 @@
-@ECHO off
-
-powershell.exe -ExecutionPolicy Unrestricted .\system\deploy.ps1
+@powershell.exe -ExecutionPolicy Unrestricted .\system\deploy.ps1 -Interactive
 
 PAUSE

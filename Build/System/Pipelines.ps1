@@ -1,70 +1,120 @@
 ﻿function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
-function Invoke-Pipeline([string]$path, [switch]$Rethrow)
+function Show-PipelineRetryPrompt($failedItemName) {
+    $title = "Retry?"
+
+    $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", `
+        "Retries the failed item, and if it succeeds continues the pipeline."
+
+    $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", `
+        "Stops execution of the pipeline and exits the script."
+
+    $skip = New-Object System.Management.Automation.Host.ChoiceDescription "&Skip", `
+        "Skip executing the failed pipeline item and continue the pipeline. Probably dangerous."
+    $options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no, $skip)
+
+    $result = $host.ui.PromptForChoice($title, $null, $options, 0) 
+
+    if($result -eq 1) {
+        return $false
+    }
+    if($result -eq 2) {
+        return $null
+    }
+
+    return $true
+}
+
+function Start-PipelineItem([string]$pipelineItemPath, $pipelineState, [switch]$Interactive, [switch]$Rethrow) 
+{
+    try {
+        Write-Host "Executing pipeline item $pipelineItemPath" -ForegroundColor Cyan
+
+        $providerPath = "$(PSScriptRoot)\Pipeline Providers\$([io.path]::GetExtension($pipelineItemPath).TrimStart('.')).ps1"
+
+        if(!(Test-Path $providerPath)) {
+            Write-Warning "Pipeline Provider not found for $pipelineItemPath! Skipping item. Expected provider path was $providerPath"
+            return
+        }
+
+        & $providerPath
+    }
+    catch {
+        # if the exception isn't a rethrown subpipeline issue, show the message
+        if($_.Exception.Message -ne "RETHROWN_PIPELINE_EXCEPTION") {
+            Write-Host "Error occurred running $pipelineItemPath." -ForegroundColor Red
+            Write-Host $_ -ForegroundColor Red
+            
+            if($_.Exception -ne $null) {
+                Write-Host "Exception:" -ForegroundColor Yellow
+                Write-Host $_.Exception -ForegroundColor White
+                
+                $inner = $_.Exception.InnerException
+                if($inner -ne $null) {
+                    Write-Host "Inner exception: " -ForegroundColor DarkYellow
+                    Write-Host $inner -ForegroundColor Gray
+                    
+                    $inner2 = $inner.InnerException
+                    if($inner2 -ne $null) {
+                        Write-Host "Inner inner exception: " -ForegroundColor DarkYellow
+                        Write-Host $inner2 -ForegroundColor DarkGray
+                    }
+                }
+            }
+            if(![string]::IsNullOrEmpty($_.ScriptStackTrace)) {
+                Write-Host "Script Stack Trace:" -ForegroundColor Yellow
+                Write-Host $_.ScriptStackTrace -ForegroundColor White
+            }
+        }
+
+        if($Interactive) {
+            $pipelineFileName = [io.path]::GetFileName($pipelineItemPath)
+            Write-Host "`r`n`ERROR: An error occurred running pipeline item $pipelineFileName." -ForegroundColor Red
+            Write-Host "See the preceding console output for error details." -ForegroundColor DarkYellow
+            Write-Host "If it's something you can fix, fix it then retry the failed item." -ForegroundColor DarkYellow
+
+            $retry = Show-PipelineRetryPrompt $pipelineFileName
+
+            if($retry -eq $null) {
+                return # skip the failed step
+            }
+            if($retry) {
+                Start-PipelineItem @psBoundParameters
+                return # if we don't return here we end up bubbling exceptions from subpipelines anyway, which we don't want if we fixed the error
+            }
+        }
+        
+        if($Rethrow) {
+            # This is used so that subpipelines can properly bubble up errors (exit 1 from a subpipeline simply exits that subpipeline, but an exception persists)
+            throw "RETHROWN_PIPELINE_EXCEPTION"
+        }
+
+        exit 1
+    }
+}
+
+function Invoke-Pipeline([string]$path, [switch]$Rethrow, [switch]$Interactive)
 {
     Test-Path $path -ErrorAction Stop > $null
 
     $pipelineName = [IO.Path]::GetFileName($path)
     $pipelinePath = $path.TrimEnd('\', '/')
+    $pipelineState = @{}
 
-    Write-Host "Pipeline $($pipelinePath) executing." -ForegroundColor Green
+    Write-Host "Pipeline $pipelinePath executing." -ForegroundColor Green
 
-	# Sorting fix; see http://stackoverflow.com/questions/5427506/how-to-sort-by-file-name-the-same-way-windows-explorer-does
-    Get-ChildItem  "$($pipelinePath)\*" | Sort-Object { [regex]::Replace($_.Name, '\d+', { $args[0].Value.PadLeft(20) }) } | foreach { 
-        Write-Host "Executing pipeline item $($_.Name)" -ForegroundColor Cyan
-    
-        $providerPath = "$(PSScriptRoot)\Pipeline Providers\$($_.Extension.TrimStart('.')).ps1"
-
-        if(!(Test-Path $providerPath)) {
-            Log-Warning "Pipeline Provider not found for $($_.FullName)! Skipping item. Expected provider path was $($providerPath)"
-            return
-        }
-
-        $pipelineItemPath = $_.FullName
-        
-        try {
-            & $providerPath
-        }
-        catch {
-            # if the exception isn't a rethrown subpipeline issue, show the message
-            if($_.Exception.Message -ne "RETHROWN_PIPELINE_EXCEPTION") {
-                Write-Host "Error occurred running $pipelineItemPath." -ForegroundColor Red
-				Write-Host $_ -ForegroundColor Red
-				if($_.Exception -ne $null) {
-					Write-Host "Exception:" -ForegroundColor Yellow
-					Write-Host $_.Exception -ForegroundColor White
-					$inner = $_.Exception.InnerException
-					if($inner -ne $null) {
-						Write-Host "Inner exception: " -ForegroundColor DarkYellow
-						Write-Host $inner -ForegroundColor Gray
-						$inner2 = $inner.InnerException
-						if($inner2 -ne $null) {
-							Write-Host "Inner inner exception: " -ForegroundColor DarkYellow
-							Write-Host $inner2 -ForegroundColor DarkGray
-			}
-					}
-				}
-				if(![string]::IsNullOrEmpty($_.ScriptStackTrace)) {
-					Write-Host "Script Stack Trace:" -ForegroundColor Yellow
-					Write-Host $_.ScriptStackTrace -ForegroundColor White
-				}
-            }
-            if($Rethrow) {
-                # This is used so that subpipelines can properly bubble up errors (exit 1 from a subpipeline simply exits that subpipeline, but an exception persists)
-                throw "RETHROWN_PIPELINE_EXCEPTION"
-            }
-
-            exit 1
-        }
+    # Sorting fix; see http://stackoverflow.com/questions/5427506/how-to-sort-by-file-name-the-same-way-windows-explorer-does
+    Get-ChildItem  "$pipelinePath\*" | Sort-Object { [regex]::Replace($_.Name, '\d+', { $args[0].Value.PadLeft(20) }) } | foreach { 
+        Start-PipelineItem $_ $pipelineState -Rethrow:$Rethrow -Interactive:$Interactive
     }
 
-    Write-Host "Pipeline $($pipelinePath) complete." -ForegroundColor Green
+    Write-Host "Pipeline $pipelinePath complete." -ForegroundColor Green
 }
 
 # Invokes a "Cascade" of pipelines. All pipelines contained in $pipelinePath are executed in order
 # Then, after each root pipeline exists, all pipelines of the same name in any of the cascade paths are also executed (eg 'extending' the base pipeline)
 # Finally, any pipelines in the cascade paths that are NOT present in $pipelinePath are executed (eg 'custom' pipelines)
-function Invoke-Pipeline-Cascade([string]$pipelinePath, [string[]]$cascadePaths) {
+function Invoke-PipelineCascade([string]$pipelinePath, [string[]]$cascadePaths, [switch]$Interactive) {
     # get all pipelines in primary
     $pipelines = Get-ChildItem $pipelinePath -Directory
     
@@ -72,13 +122,13 @@ function Invoke-Pipeline-Cascade([string]$pipelinePath, [string[]]$cascadePaths)
     $pipelines | ForEach-Object {
         $pipeline = $_
 
-        Invoke-Pipeline $pipeline.FullName
+        Invoke-Pipeline $pipeline.FullName -Interactive:$Interactive
 
         $cascadePaths | ForEach-Object {
             $cascadePath = Join-Path $_ $pipeline.Name
 
             if(Test-Path $cascadePath) {
-                Invoke-Pipeline $cascadePath
+                Invoke-Pipeline $cascadePath -Interactive:$Interactive
             }
         }
     }
@@ -96,7 +146,7 @@ function Invoke-Pipeline-Cascade([string]$pipelinePath, [string[]]$cascadePaths)
                 $primaryPath = Join-Path $pipelinePath $cascadePipeline.Name
 
                 if(!(Test-Path $primaryPath)) {
-                   Invoke-Pipeline $primaryPath
+                   Invoke-Pipeline $primaryPath -Interactive:$Interactive
                 }
             }
         }
